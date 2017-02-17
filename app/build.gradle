@@ -1,0 +1,80 @@
+apply plugin: 'com.android.application'
+apply plugin: 'android-apt'
+apply plugin: 'io.fabric'
+apply plugin: 'me.tatarka.retrolambda'
+
+buildscript {
+    repositories {
+        maven { url 'https://maven.fabric.io/public' }
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'io.fabric.tools:gradle:1.+'
+        classpath 'me.tatarka:gradle-retrolambda:3.4.0'
+    }
+}
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        applicationId "com.fibelatti.moviedb"
+        versionCode 1
+        versionName "1.0.0"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+
+        manifestPlaceholders = [fabricApiKey: FABRIC_API_KEY]
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+
+    // Material Design
+    compile "com.android.support:appcompat-v7:$rootProject.ext.appCompatVersion"
+    compile "com.android.support:design:$rootProject.ext.designVersion"
+    compile "com.android.support:recyclerview-v7:$rootProject.ext.recyclerViewVersion"
+    compile "com.android.support:cardview-v7:$rootProject.ext.cardViewVersion"
+
+    // Butter Knife
+    compile "com.jakewharton:butterknife:$rootProject.ext.butterKnifeVersion"
+    apt "com.jakewharton:butterknife-compiler:$rootProject.ext.butterKnifeVersion"
+
+    // Crashlytics
+    compile("com.crashlytics.sdk.android:crashlytics:$rootProject.ext.crashlyticsVersion@aar") {
+        transitive = true;
+    }
+
+    // Memory Leaks
+    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'
+
+    // Rx
+    compile "io.reactivex:rxandroid:$rootProject.ext.rxAndroidVersion"
+    compile "io.reactivex:rxjava:$rootProject.ext.rxJavaVersion"
+
+    // Retrofit
+    compile "com.squareup.retrofit2:retrofit:$rootProject.ext.retrofitVersion"
+    compile "com.squareup.retrofit2:converter-gson:$rootProject.ext.retrofitGsonConverterVersion"
+    compile "com.squareup.retrofit2:adapter-rxjava:$rootProject.ext.retrofitAdapterVersion"
+
+    // Testing
+    testCompile "junit:junit:$rootProject.ext.jUnitVersion"
+
+    // Diagonal Layout
+    compile "com.github.florent37:diagonallayout:$rootProject.ext.diagonalLayoutVersion"
+
+    // Custom FAB
+    compile "com.github.clans:fab:$rootProject.ext.clansFabVersion"
+
+    // Picasso
+    compile "com.squareup.picasso:picasso:$rootProject.ext.picassoVersion"
+}
