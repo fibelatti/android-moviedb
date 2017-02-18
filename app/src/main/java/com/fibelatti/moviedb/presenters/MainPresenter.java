@@ -1,5 +1,6 @@
 package com.fibelatti.moviedb.presenters;
 
+import android.app.Activity;
 import android.content.Context;
 
 import com.fibelatti.moviedb.BuildConfig;
@@ -7,6 +8,7 @@ import com.fibelatti.moviedb.apiInterfaces.MovieService;
 import com.fibelatti.moviedb.helpers.ServicesHelper;
 import com.fibelatti.moviedb.models.Movie;
 import com.fibelatti.moviedb.models.Search;
+import com.fibelatti.moviedb.views.Navigator;
 
 import rx.Observable;
 
@@ -14,6 +16,7 @@ public class MainPresenter
         implements IMainPresenter {
 
     private Context context;
+    private Navigator navigator;
 
     private int currentPage;
 
@@ -28,6 +31,7 @@ public class MainPresenter
     @Override
     public void onCreate() {
         this.currentPage = 1;
+        this.navigator = new Navigator((Activity) context);
     }
 
     @Override
@@ -84,7 +88,7 @@ public class MainPresenter
     }
 
     @Override
-    public void goToMovie(int movieListIndex) {
-
+    public void goToMovie(Movie movie) {
+        navigator.startMovieDetailActivity(movie);
     }
 }

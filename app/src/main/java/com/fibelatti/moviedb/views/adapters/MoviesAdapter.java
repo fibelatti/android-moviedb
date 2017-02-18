@@ -90,6 +90,10 @@ public class MoviesAdapter
         }
     }
 
+    public Movie getMovieByIndex(int index) {
+        return movieList.get(index);
+    }
+
     @Override
     public int getItemViewType(int position) {
         return movieList.get(position) == null ? VIEW_TYPE_LOADING : VIEW_TYPE_ITEM;
@@ -126,7 +130,7 @@ public class MoviesAdapter
                     .into(movieViewHolder.movieCover);
 
             movieViewHolder.movieName.setText(item.getTitle());
-            movieViewHolder.movieYear.setText(context.getString(R.string.main_hint_movie_release_date, item.getReleaseDate()));
+            movieViewHolder.movieYear.setText(context.getString(R.string.main_hint_movie_release_date, item.getReleaseDate().substring(0, 4)));
             movieViewHolder.movieGenres.setText(item.getGenresConcatenated());
             movieViewHolder.moviePopularity.setText(context.getString(R.string.main_hint_movie_popularity_score, item.getPopularity()));
         } else if (holder instanceof LoadingViewHolder) {

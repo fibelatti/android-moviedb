@@ -17,5 +17,5 @@ public interface IMainPresenter {
 
     Observable<Movie> getNextPage();
 
-    void goToMovie(int movieListIndex);
+    void goToMovie(Movie movie);
 }
