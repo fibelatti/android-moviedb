@@ -28,4 +28,7 @@
 
     <dimen name="card_margin">4dp</dimen>
     <dimen name="card_radius">2dp</dimen>
+
+    <dimen name="movie_poster_width">108dp</dimen>
+    <dimen name="movie_poster_height">160dp</dimen>
 </resources>

@@ -60,7 +60,7 @@ public class Movie
     private String releaseDate;
     @SerializedName("revenue")
     @Expose
-    private Integer revenue;
+    private Double revenue;
     @SerializedName("runtime")
     @Expose
     private Integer runtime;
@@ -120,6 +120,17 @@ public class Movie
 
     public List<Genre> getGenres() {
         return genres;
+    }
+
+    public String getGenresConcatenated() {
+        String concat = "";
+
+        for (Genre genre : genres) {
+            if (!concat.isEmpty()) concat += ", ";
+            concat += genre.getName();
+        }
+
+        return concat;
     }
 
     public void setGenres(List<Genre> genres) {
@@ -214,11 +225,11 @@ public class Movie
         this.releaseDate = releaseDate;
     }
 
-    public Integer getRevenue() {
+    public Double getRevenue() {
         return revenue;
     }
 
-    public void setRevenue(Integer revenue) {
+    public void setRevenue(Double revenue) {
         this.revenue = revenue;
     }
 
