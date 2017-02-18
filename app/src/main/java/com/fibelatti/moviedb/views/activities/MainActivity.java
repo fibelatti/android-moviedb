@@ -52,7 +52,7 @@ public class MainActivity
         super.onCreate(savedInstanceState);
 
         context = getApplicationContext();
-        presenter = MainPresenter.createPresenter(context);
+        presenter = MainPresenter.createPresenter(this);
         moviesAdapter = new MoviesAdapter(this);
 
         presenter.onCreate();
@@ -104,7 +104,7 @@ public class MainActivity
         recyclerViewMovies.setAdapter(moviesAdapter);
 
         recyclerViewMovies.addOnItemTouchListener(new RecyclerTouchListener.Builder(this)
-                .setOnItemTouchListener((view, position) -> presenter.goToMovie(position))
+                .setOnItemTouchListener((view, position) -> presenter.goToMovie(moviesAdapter.getMovieByIndex(position)))
                 .build());
 
         recyclerViewMovies.addOnScrollListener(new RecyclerView.OnScrollListener() {
