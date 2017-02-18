@@ -5,6 +5,7 @@ import android.content.Context;
 
 import com.fibelatti.moviedb.BuildConfig;
 import com.fibelatti.moviedb.apiInterfaces.MovieService;
+import com.fibelatti.moviedb.helpers.AnalyticsHelper;
 import com.fibelatti.moviedb.helpers.ServicesHelper;
 import com.fibelatti.moviedb.models.Movie;
 import com.fibelatti.moviedb.models.Search;
@@ -71,6 +72,9 @@ public class MainPresenter
     @Override
     public Observable<Movie> getNextPage() {
         this.currentPage++;
+
+        AnalyticsHelper.getInstance().fireLoadNewPageEvent(this.currentPage);
+
         return ServicesHelper
                 .getMovieService()
                 .searchPopularMovies(
@@ -89,6 +93,8 @@ public class MainPresenter
 
     @Override
     public void goToMovie(Movie movie) {
+        AnalyticsHelper.getInstance().fireViewMovieDetailEvent(movie.getTitle());
+
         navigator.startMovieDetailActivity(movie);
     }
 }

@@ -42,6 +42,7 @@ ext {
 
     butterKnifeVersion = '8.2.1'
     crashlyticsVersion = '2.6.1'
+    answersVersion = '1.3.10'
 
     leakCanaryVersion = '1.5'
 
