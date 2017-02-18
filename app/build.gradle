@@ -72,9 +72,6 @@ dependencies {
     // Diagonal Layout
     compile "com.github.florent37:diagonallayout:$rootProject.ext.diagonalLayoutVersion"
 
-    // Custom FAB
-    compile "com.github.clans:fab:$rootProject.ext.clansFabVersion"
-
     // Picasso
     compile "com.squareup.picasso:picasso:$rootProject.ext.picassoVersion"
 }
