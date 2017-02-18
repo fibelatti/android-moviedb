@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:diagonal="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorWhiteOpaque"
+    android:fitsSystemWindows="true"
+    tools:context=".views.activities.MovieDetailActivity">
+
+    <com.github.florent37.diagonallayout.DiagonalLayout
+        android:id="@+id/diagonal_layout"
+        android:layout_width="match_parent"
+        android:layout_height="266dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:paddingBottom="@dimen/padding_regular"
+        diagonal:diagonal_angle="10"
+        diagonal:diagonal_gravity="left">
+
+        <ImageView
+            android:id="@+id/image_view_movie_poster"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|start">
+
+            <ImageButton
+                android:id="@+id/button_back"
+                android:layout_width="@dimen/clickable_area"
+                android:layout_height="@dimen/clickable_area"
+                android:layout_gravity="top|start"
+                android:layout_marginLeft="@dimen/margin_small"
+                android:layout_marginStart="@dimen/margin_small"
+                android:layout_marginTop="@dimen/margin_small"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/hint_button_back"
+                android:padding="@dimen/padding_small"
+                android:src="@drawable/ic_arrow_back_white_24dp"
+                android:text="@string/hint_button_back"
+                android:tint="@color/colorWhiteOpaque"/>
+
+            <LinearLayout
+                android:id="@+id/layout_movie_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/button_back"
+                android:layout_marginLeft="@dimen/margin_regular"
+                android:layout_marginStart="@dimen/margin_regular"
+                android:layout_marginTop="@dimen/margin_regular"
+                android:background="@drawable/rounded_rectangle"
+                android:orientation="vertical"
+                android:padding="@dimen/padding_small">
+
+                <TextView
+                    android:id="@+id/text_view_movie_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/margin_small"
+                    android:textColor="@color/colorWhiteOpaque"
+                    android:textSize="@dimen/text_size_extra_large"/>
+
+                <TextView
+                    android:id="@+id/text_view_movie_year"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorWhiteOpaque"
+                    android:textSize="@dimen/text_size_large"/>
+            </LinearLayout>
+        </RelativeLayout>
+    </com.github.florent37.diagonallayout.DiagonalLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_small"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/layout_ratings"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="230dp"
+            android:orientation="horizontal"
+            android:weightSum="4">
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"/>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"/>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"/>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/margin_small"
+                    android:layout_marginStart="@dimen/margin_small"
+                    android:text="@string/movie_detail_popularity"
+                    android:textColor="@color/textPrimary"
+                    android:textSize="@dimen/text_size_regular"/>
+
+                <TextView
+                    android:id="@+id/text_view_movie_popularity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/margin_small"
+                    android:layout_marginStart="@dimen/margin_small"
+                    android:textColor="@color/textPrimary"
+                    android:textSize="@dimen/text_size_regular"
+                    android:textStyle="bold"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/text_view_plot"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_small"
+            android:textColor="@color/textSecondary"
+            android:textSize="@dimen/text_size_regular"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/divider_size"
+            android:layout_marginBottom="@dimen/margin_small"
+            android:layout_marginTop="@dimen/margin_small"
+            android:background="@color/colorGrayLight"/>
+
+        <TextView
+            android:id="@+id/text_view_genres"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_small"
+            android:textColor="@color/textSecondary"
+            android:textSize="@dimen/text_size_small"/>
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/image_view_expanded"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"/>
+</android.support.design.widget.CoordinatorLayout>
