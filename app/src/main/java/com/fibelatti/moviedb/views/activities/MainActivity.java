@@ -33,8 +33,7 @@ public class MainActivity
     private Subscription searchSubscription;
 
     private boolean isLoading;
-    private int visibleThreshold = 5;
-    private int lastVisibleItem, totalItemCount;
+    int pastVisibleItems, visibleItemCount, totalItemCount;
 
     //region layout bindings
     @BindView(R.id.root_layout)
@@ -111,10 +110,11 @@ public class MainActivity
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-
+                visibleItemCount = linearLayoutManager.getChildCount();
                 totalItemCount = linearLayoutManager.getItemCount();
-                lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
-                if (!isLoading && totalItemCount <= (lastVisibleItem + visibleThreshold)) {
+                pastVisibleItems = linearLayoutManager.findFirstVisibleItemPosition();
+
+                if (!isLoading && (visibleItemCount + pastVisibleItems) >= totalItemCount) {
                     fetchNextPage();
                 }
             }
