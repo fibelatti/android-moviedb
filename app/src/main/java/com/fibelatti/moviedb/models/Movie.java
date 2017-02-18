@@ -122,6 +122,17 @@ public class Movie
         return genres;
     }
 
+    public String getGenresConcatenated() {
+        String concat = "";
+
+        for (Genre genre : genres) {
+            if (!concat.isEmpty()) concat += ", ";
+            concat += genre.getName();
+        }
+
+        return concat;
+    }
+
     public void setGenres(List<Genre> genres) {
         this.genres = genres;
     }
