@@ -75,6 +75,7 @@ dependencies {
 
     // Testing
     testCompile "junit:junit:$rootProject.ext.jUnitVersion"
+    testCompile "org.mockito:mockito-android:$rootProject.ext.mockitoVersion"
 
     // Diagonal Layout
     compile "com.github.florent37:diagonallayout:$rootProject.ext.diagonalLayoutVersion"
