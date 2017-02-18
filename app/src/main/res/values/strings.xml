@@ -20,6 +20,9 @@
     <string name="main_title">The MovieDB - Most Popular</string>
 
     <string name="main_hint_movie_release_date">Released in %s</string>
-    <string name="main_hint_movie_popularity_score">Popularity Score: %s</string>
+    <string name="main_hint_movie_popularity_score">Popularity Score: %.2f</string>
+
+    <!-- MovieDetailActivity -->
+    <string name="movie_detail_popularity">Popularity</string>
 
 </resources>
