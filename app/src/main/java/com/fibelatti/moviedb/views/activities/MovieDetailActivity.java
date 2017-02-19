@@ -9,7 +9,7 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageButton;
@@ -17,25 +17,44 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.fibelatti.moviedb.BuildConfig;
 import com.fibelatti.moviedb.Constants;
 import com.fibelatti.moviedb.R;
 import com.fibelatti.moviedb.apiInterfaces.MovieService;
 import com.fibelatti.moviedb.models.Movie;
+import com.fibelatti.moviedb.presenters.IMovieDetailPresenter;
+import com.fibelatti.moviedb.presenters.MovieDetailPresenter;
+import com.google.android.youtube.player.YouTubeBaseActivity;
+import com.google.android.youtube.player.YouTubeInitializationResult;
+import com.google.android.youtube.player.YouTubePlayer;
+import com.google.android.youtube.player.YouTubePlayerView;
 import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class MovieDetailActivity
-        extends AppCompatActivity {
+        extends YouTubeBaseActivity
+        implements YouTubePlayer.OnInitializedListener {
+    public static final String TAG = MovieDetailActivity.class.getSimpleName();
 
     private Context context;
+    private IMovieDetailPresenter presenter;
+
+    private Subscription videoSubscription;
 
     private Movie movie;
+    private String movieVideoId;
 
     private Animator currentAnimator;
     private int shortAnimationDuration;
+
+    private YouTubePlayer youTubePlayer;
+    private boolean isFullScreen;
 
     //region layout bindings
     @BindView(R.id.root_layout)
@@ -58,6 +77,8 @@ public class MovieDetailActivity
     TextView plot;
     @BindView(R.id.text_view_genres)
     TextView genres;
+    @BindView(R.id.youtube_player_view)
+    YouTubePlayerView youTubePlayerView;
     //endregion
 
     @Override
@@ -65,28 +86,47 @@ public class MovieDetailActivity
         super.onCreate(savedInstanceState);
 
         context = getApplicationContext();
+        presenter = MovieDetailPresenter.createPresenter(this);
+
+        presenter.onCreate();
 
         shortAnimationDuration = getResources().getInteger(android.R.integer.config_shortAnimTime);
+        movie = fetchDataFromIntent(savedInstanceState);
 
         setUpLayout();
-
-        if (savedInstanceState != null) {
-            movie = (Movie) savedInstanceState.getSerializable(Constants.INTENT_EXTRA_MOVIE);
-        } else if (getIntent().hasExtra(Constants.INTENT_EXTRA_MOVIE)) {
-            movie = fetchDataFromIntent();
-        }
-
         setUpValues();
+        searchVideos();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        presenter.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        presenter.onResume();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        presenter.onDestroy();
+
+        if (!videoSubscription.isUnsubscribed()) videoSubscription.unsubscribe();
     }
 
     @Override
     public void onBackPressed() {
-        finish();
+        if (moviePosterExpanded.getVisibility() == View.VISIBLE) {
+            moviePosterExpanded.setVisibility(View.GONE);
+        } else if (isFullScreen) {
+            youTubePlayer.setFullscreen(false);
+        } else {
+            finish();
+        }
     }
 
     @Override
@@ -100,8 +140,14 @@ public class MovieDetailActivity
         ButterKnife.bind(this);
     }
 
-    private Movie fetchDataFromIntent() {
-        return (Movie) getIntent().getSerializableExtra(Constants.INTENT_EXTRA_MOVIE);
+    private Movie fetchDataFromIntent(Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            return (Movie) savedInstanceState.getSerializable(Constants.INTENT_EXTRA_MOVIE);
+        } else if (getIntent().hasExtra(Constants.INTENT_EXTRA_MOVIE)) {
+            return (Movie) getIntent().getSerializableExtra(Constants.INTENT_EXTRA_MOVIE);
+        }
+
+        return null;
     }
 
     private void setUpValues() {
@@ -120,6 +166,22 @@ public class MovieDetailActivity
         genres.setText(movie.getGenresConcatenated());
     }
 
+    private void searchVideos() {
+        if (videoSubscription != null && !videoSubscription .isUnsubscribed())
+            videoSubscription .unsubscribe();
+
+        videoSubscription = presenter.getVideo(movie.getId())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        searchVideoResult -> {
+                            movieVideoId = searchVideoResult.getKey();
+                            youTubePlayerView.initialize(BuildConfig.YOUTUBE_API_KEY, this);
+                        },
+                        throwable -> Log.e(getString(R.string.generic_log_error, TAG, "searchVideos"), throwable.getMessage())
+                );
+    }
+
     @OnClick(R.id.button_back)
     public void backToMovieList() {
         finish();
@@ -133,6 +195,23 @@ public class MovieDetailActivity
     @OnClick(R.id.layout_movie_info)
     public void handleInfoClick() {
         zoomImageFromThumb(moviePoster);
+    }
+
+    @Override
+    public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult result) {
+        Log.e(getString(R.string.generic_log_error, TAG, "onInitializationFailure"), "Failed to initialize YouTube.");
+    }
+
+    @Override
+    public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer player, boolean wasRestored) {
+        if (null == player) return;
+        if (!wasRestored) {
+            youTubePlayer = player;
+            youTubePlayer.cueVideo(movieVideoId);
+            youTubePlayer.setOnFullscreenListener(_isFullScreen -> isFullScreen = _isFullScreen);
+        }
+
+        youTubePlayerView.setVisibility(View.VISIBLE);
     }
 
     private void zoomImageFromThumb(final View thumbView) {
