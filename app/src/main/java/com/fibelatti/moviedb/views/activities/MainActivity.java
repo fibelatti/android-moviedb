@@ -25,6 +25,7 @@ import rx.schedulers.Schedulers;
 
 public class MainActivity
         extends AppCompatActivity {
+    public static final String TAG = MainActivity.class.getSimpleName();
 
     private Context context;
     private IMainPresenter presenter;
@@ -142,7 +143,7 @@ public class MainActivity
                 })
                 .subscribe(
                         movie -> moviesAdapter.addMovieToList(movie),
-                        throwable -> Log.e("Error", throwable.getMessage())
+                        throwable -> Log.e(getString(R.string.generic_log_error, TAG, "refreshData"), throwable.getMessage())
                 );
     }
 
@@ -164,7 +165,11 @@ public class MainActivity
                 })
                 .subscribe(
                         movie -> moviesAdapter.addMovieToList(movie),
-                        throwable -> Log.e("Error", throwable.getMessage())
+                        throwable -> {
+                            isLoading = false;
+                            moviesAdapter.hideLoadingItem();
+                            Log.e(getString(R.string.generic_log_error, TAG, "fetchNextPage"), throwable.getMessage());
+                        }
                 );
     }
 }
