@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.core.CrashlyticsCore;
+import com.squareup.leakcanary.LeakCanary;
 
 import io.fabric.sdk.android.Fabric;
 
@@ -27,6 +28,8 @@ public class MovieDbApplication
                         .disabled(true)
                         .build()
                 ).build());
+
+        LeakCanary.install(this);
     }
 
     @Override
