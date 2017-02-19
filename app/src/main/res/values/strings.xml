@@ -14,6 +14,8 @@
     <string name="hint_cancel">Cancel</string>
     <string name="hint_button_back">Navigate back</string>
 
+    <string name="generic_log_error">Error in %1$s (%2$s)</string>
+
     <string name="generic_msg_error">Oops! Something went wrong. Please try again.</string>
 
     <!-- MainActivity -->
