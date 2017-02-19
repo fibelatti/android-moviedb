@@ -8,7 +8,9 @@ import com.fibelatti.moviedb.helpers.ServicesHelper;
 import com.fibelatti.moviedb.models.Movie;
 import com.fibelatti.moviedb.models.Search;
 import com.fibelatti.moviedb.presenters.IMainPresenter;
+import com.fibelatti.moviedb.presenters.IMovieDetailPresenter;
 import com.fibelatti.moviedb.presenters.MainPresenter;
+import com.fibelatti.moviedb.presenters.MovieDetailPresenter;
 
 import org.junit.After;
 import org.junit.Before;
@@ -19,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rx.Scheduler;
-import rx.Subscription;
 import rx.android.plugins.RxAndroidPlugins;
 import rx.android.plugins.RxAndroidSchedulersHook;
 import rx.android.schedulers.AndroidSchedulers;
@@ -31,8 +32,8 @@ import static org.junit.Assert.assertEquals;
 public class ServiceTest {
     @Mock
     Context fakeContext;
-    IMainPresenter presenter;
-    Subscription testSubscription;
+    IMainPresenter mainPresenter;
+    IMovieDetailPresenter movieDetailPresenter;
 
     @Before
     public void setUp() throws Exception {
@@ -52,20 +53,27 @@ public class ServiceTest {
             }
         });
 
-        presenter = MainPresenter.createPresenter(fakeContext);
+        mainPresenter = MainPresenter.createPresenter(fakeContext);
+        movieDetailPresenter = MovieDetailPresenter.createPresenter(fakeContext);
     }
 
     @After
     public void tearDown() throws Exception {
         RxJavaHooks.reset();
         RxAndroidPlugins.getInstance().reset();
+
+        mainPresenter = null;
+        movieDetailPresenter = null;
     }
 
     @Test
     public void fetchMoviesWithApiKey() throws Exception {
+        // Adding sleep to avoid HTTP 429 when running all tests
+        Thread.sleep(3000);
+
         List<Movie> movies = new ArrayList<>();
 
-        testSubscription = presenter.refresh()
+        mainPresenter.refresh()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnCompleted(() -> {
@@ -80,6 +88,9 @@ public class ServiceTest {
 
     @Test
     public void fetchMoviesWithoutApiKey() throws Exception {
+        // Adding sleep to avoid HTTP 429 when running all tests
+        Thread.sleep(3000);
+
         List<Movie> movies = new ArrayList<>();
 
         ServicesHelper
@@ -105,6 +116,36 @@ public class ServiceTest {
                 .subscribe(
                         movies::add,
                         throwable -> assertEquals(throwable.getMessage().isEmpty(), false)
+                );
+    }
+
+    @Test
+    public void fetchVideo() throws Exception {
+        // Adding sleep to avoid HTTP 429 when running all tests
+        Thread.sleep(3000);
+
+        List<Movie> movies = new ArrayList<>();
+
+        mainPresenter.refresh()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnCompleted(() -> {
+                    assertEquals(movies.isEmpty(), false);
+                    assertEquals(movies.size(), 20);
+
+                    movieDetailPresenter.getVideo(movies.get(0).getId())
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(
+                                    searchVideoResult -> {
+                                        assertEquals(searchVideoResult.getKey().isEmpty(), false);
+                                    },
+                                    throwable -> Log.e("Error", throwable.getMessage())
+                            );
+                })
+                .subscribe(
+                        movies::add,
+                        throwable -> Log.e("Error", throwable.getMessage())
                 );
     }
 }

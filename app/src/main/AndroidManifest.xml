@@ -30,7 +30,7 @@
 
         <activity
             android:name=".views.activities.MovieDetailActivity"
-            android:configChanges="orientation"
+            android:configChanges="orientation|screenSize"
             android:parentActivityName=".views.activities.MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
